@@ -1,0 +1,32 @@
+Major Clarity Queries
+
+Schools.Csv:
+  select school_number, name, schoolcity, schoolstate, schoolzip from schools;
+
+Staff.Csv:
+  select SchoolID, TeacherNumber,Email_Addr,First_Name,Last_Name from Teachers where Status=1;
+
+Students.Csv:
+ select s.SCHOOLID, s.STUDENT_NUMBER, psc.email, s.FIRST_NAME, s.LAST_NAME, s.GRADE_LEVEL from PSM_STudentcontact psc
+          inner join psm_studentcontacttype psct on psc.studentcontacttypeid= psct.id and psct.name='Self'
+          inner join sync_studentmap ssm on psc.studentid = ssm.studentid
+          inner join students s on ssm.studentsdcid = s.dcid
+		  where s.enroll_status = 0;
+		  
+Courses.Csv:
+select SchoolID, Course_Number, Course_Name, Sched_CourseSubjectAreaCode from Courses;
+
+Course_History.Csv
+  select sec.SchoolID, sec.Course_Number, stu.Student_Number, gra.Grade, gra.Grade_Level, 
+          to_char(to_number(substr(trm.YearID, 0,2)) + 1990) as gradeyear, gra.EarnedCrHrs,
+          trm.Abbreviation
+          from Students stu
+          join StoredGrades gra on stu.dcid = gra.StudentID
+          join Sections sec on gra.SectionID = sec.id
+          join Terms trm on gra.TermID = trm.ID
+          where stu.Enroll_Status = 0 AND
+          gra.grade_level between 6 and 12 AND
+          gra.storecode IN ('F1','Y1','S1','S2')
+          group by sec.SchoolID, sec.Course_Number, stu.Student_Number, gra.Grade, gra.Grade_Level, 
+          to_char(to_number(substr(trm.YearID, 0,2)) + 1990), gra.EarnedCrHrs,
+          trm.Abbreviation;

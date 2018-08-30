@@ -1,0 +1,22 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+	<description>Courses Export for Major Clarity</description>
+	<properties>
+		<!--Loading from external properties file-->
+		<include href="etl.properties"/>
+	</properties>
+	<connection id="POWERSCHOOLDB" driver="$driver1" url="$url1" user="$user1" password="$password1" classpath="$classpath1"/>
+	<connection id="MC_Courses" driver="csv" url="$outputcsv11">
+		null_string=
+		eol=\r\n
+	</connection>
+        <script connection-id="MC_Courses">
+			schoolid,course_number,course_name,subject
+		</script>
+	<query connection-id="POWERSCHOOLDB">
+      select SchoolID, Course_Number, Course_Name, Sched_CourseSubjectAreaCode from Courses;
+        <script connection-id="MC_Courses">
+			$schoolid,$course_number,$course_name," "
+		</script>
+	</query>
+</etl>

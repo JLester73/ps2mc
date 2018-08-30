@@ -1,0 +1,34 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+	<description>Course History Export for Major Clarity</description>
+	<properties>
+		<!--Loading from external properties file-->
+		<include href="etl.properties"/>
+	</properties>
+	<connection id="POWERSCHOOLDB" driver="$driver1" url="$url1" user="$user1" password="$password1" classpath="$classpath1"/>
+	<connection id="MC_CourseHistory" driver="csv" url="$outputcsv12">
+		null_string=
+		eol=\r\n
+	</connection>
+        <script connection-id="MC_CourseHistory">
+			schoolid,course_number,student_number,grade,grade_level,year,abbreviation,EarnedCrHrs
+		</script>
+	<query connection-id="POWERSCHOOLDB">
+      select sec.SchoolID, sec.Course_Number, stu.Student_Number, gra.Grade, gra.Grade_Level, 
+        to_char(to_number(substr(trm.YearID, 0,2)) + 1990) as gradeyear, gra.EarnedCrHrs,
+        trm.Abbreviation
+        from Students stu
+        join StoredGrades gra on stu.dcid = gra.StudentID
+        join Sections sec on gra.SectionID = sec.id
+        join Terms trm on gra.TermID = trm.ID
+        where stu.Enroll_Status = 0 AND
+        gra.grade_level between 6 and 12 AND
+        gra.storecode IN ('F1','Y1','S1','S2')
+        group by sec.SchoolID, sec.Course_Number, stu.Student_Number, gra.Grade, gra.Grade_Level, 
+        to_char(to_number(substr(trm.YearID, 0,2)) + 1990), gra.EarnedCrHrs,
+        trm.Abbreviation;
+        <script connection-id="MC_CourseHistory">
+			$schoolid,$course_number,$student_number,$grade,$grade_level,$gradeyear,$abbreviation,$EarnedCrHrs
+		</script>
+	</query>
+</etl>
