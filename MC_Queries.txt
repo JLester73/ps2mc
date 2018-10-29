@@ -21,7 +21,7 @@ Course_History.Csv
           to_char(to_number(substr(trm.YearID, 0,2)) + 1990) as gradeyear, gra.EarnedCrHrs,
           trm.Abbreviation
           from Students stu
-          join StoredGrades gra on stu.dcid = gra.StudentID
+          join StoredGrades gra on stu.id = gra.StudentID
           join Sections sec on gra.SectionID = sec.id
           join Terms trm on gra.TermID = trm.ID
           where stu.Enroll_Status = 0 AND
