@@ -11,12 +11,12 @@
 		eol=\r\n
 	</connection>
 	    <script connection-id="MC_Schools">
-			school_number, name, schoolcity, schoolstate, schoolzip
+			school_number, name, schoolcity, schoolstate, schoolzip, address, address_2
 		</script>
 	<query connection-id="POWERSCHOOLDB">
-        select school_number, name, schoolcity, schoolstate, schoolzip from schools;
+        select school_number, name, schoolcity, schoolstate, schoolzip, schooladdress from schools;
         <script connection-id="MC_Schools">
-			$school_number, $name, $schoolcity, $schoolstate, $schoolzip
+			$school_number, $name, $schoolcity, $schoolstate, $schoolzip, $schooladdress,
 		</script>
 	</query>
 </etl>
